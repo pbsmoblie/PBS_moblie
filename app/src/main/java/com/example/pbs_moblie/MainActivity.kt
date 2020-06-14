@@ -2,6 +2,7 @@ package com.example.pbs_moblie
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -103,7 +104,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback ,SensorEventListene
 
 
 
+        calbtn.setOnClickListener {
+            intent = Intent(this,CalendarActivity::class.java)
+            startActivity(intent)
+        }
 
+        //랭킹 버튼만들거
+        /*rankbtn.setOnClickListener {
+            intent = Intent(this,)
+        }*/
 
 
 
@@ -156,6 +165,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback ,SensorEventListene
         // (정보 요청할 때 넘겨줄 데이터)에 관한 객체, 위치 갱신되면 호출되는 콜백, 특정 스레드 지정(별 일 없으니 null)
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
+
+
 
     /**
      * 사용 가능한 맵을 조작한다.
