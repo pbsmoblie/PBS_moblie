@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback ,SensorEventListene
             ok = { addLocationListener() })
 
         //액티비티가 동작할 때만 센서가 동작하게 하기 위함(배터리 소모를 방지하기 위해)
-        sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER),SensorManager.SENSOR_DELAY_FASTEST);
+       // sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER),SensorManager.SENSOR_DELAY_FASTEST);
         //두번째 인자는 사용할 센서 종류
         //세번째 인자는 값을 얼마나 자주 받을것인지 (화면 방향이 전환될 때 적합한 정도로 값을 받음)
     }
@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback ,SensorEventListene
 
         //액티비티가 가려진 경우(사용하지 않을 경우)
         // 걸음 감지 세서를 멈춤(비활성화)
-        sensorManager.unregisterListener(this)
+       // sensorManager.unregisterListener(this)
         }
 
     // 위치 요청 메소드
@@ -274,7 +274,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback ,SensorEventListene
                                                         // 최종 값을 전달하는 함수
 
 //        if(event?.sensor?.type == Sensor.TYPE_STEP_COUNTER
-          work_num.text ="Step Count: "+ "${event!!.values[0]}"
+          //work_num.text ="Step Count: "+ "${event!!.values[0]}"
 
 
     }
