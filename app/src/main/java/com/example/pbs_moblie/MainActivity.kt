@@ -30,15 +30,19 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.concurrent.timer
 import kotlin.concurrent.timerTask
 
-
+//,SensorEventListener
 //걸음 감지 센서(TYPE_STEP_COUNTER)를 사용하기 위해 SensorEventListener 인터페이스를  상속
-class MainActivity : AppCompatActivity(), OnMapReadyCallback ,SensorEventListener{
+class MainActivity : AppCompatActivity(), OnMapReadyCallback,SensorEventListener {
     private val polyLineOptions = PolylineOptions().width(7f).color(Color.RED) // 이동경로를 그릴 선
     private lateinit var mMap: GoogleMap // 마커, 카메라 지정을 위한 구글 맵 객체
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient // 위치 요청 메소드 담고 있는 객체
@@ -88,24 +92,33 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback ,SensorEventListene
         }
     }
 
-
-
+    var database : DatabaseReference = FirebaseDatabase.getInstance().reference
+    var nickname : String =" "  //intent로 받은 닉네임을 저장할 변수
+    var currentdate : String =""
     // 이 메소드부터 프로그램 시작
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val Date: LocalDate = LocalDate.now() //현재 날짜 표시
+        currentdate = Date.format(DateTimeFormatter.ofPattern("yyyy-M-dd")) //Date를 String으로 변환
+        val intent1 = getIntent()
+
+
+        nickname = intent1.getStringExtra("nickname") //intent로 받아온 닉네임을 nickname에 저장
+
         val sensorManager : SensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         val stepcountsensor : Sensor= sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
 
-        if(stepcountsensor == null){
-            Toast.makeText(this, "No Step Detect Sensor",Toast.LENGTH_SHORT).show();
+       if(stepcountsensor == null){
+            Toast.makeText(this, "No Step Detect Sensor",Toast.LENGTH_SHORT).show()
         }
 
 
 
         calbtn.setOnClickListener {
             intent = Intent(this,CalendarActivity::class.java)
+            intent.putExtra("nickname",nickname) //닉네임을 보냄
             startActivity(intent)
         }
 
@@ -142,8 +155,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback ,SensorEventListene
         permissionCheck(cancel = { showPermissionInfoDialog() },
             ok = { addLocationListener() })
 
-        //액티비티가 동작할 때만 센서가 동작하게 하기 위함(배터리 소모를 방지하기 위해)
-       // sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER),SensorManager.SENSOR_DELAY_FASTEST);
+        //액티비티가 동작할 때만 센서가 동작하게 하기 위함(터리 소모를 방지하기 위해)
+            sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER),SensorManager.SENSOR_DELAY_FASTEST);
         //두번째 인자는 사용할 센서 종류
         //세번째 인자는 값을 얼마나 자주 받을것인지 (화면 방향이 전환될 때 적합한 정도로 값을 받음)
     }
@@ -155,7 +168,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback ,SensorEventListene
 
         //액티비티가 가려진 경우(사용하지 않을 경우)
         // 걸음 감지 세서를 멈춤(비활성화)
-       // sensorManager.unregisterListener(this)
+        sensorManager.unregisterListener(this)
         }
 
     // 위치 요청 메소드
@@ -273,11 +286,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback ,SensorEventListene
     override fun onSensorChanged(event: SensorEvent?) { //동작을 감지하면 이벤트를 발생시켜 1씩 증가된
                                                         // 최종 값을 전달하는 함수
 
-//        if(event?.sensor?.type == Sensor.TYPE_STEP_COUNTER
-          //work_num.text ="Step Count: "+ "${event!!.values[0]}"
+//     if(event?.sensor?.type == Sensor.TYPE_STEP_COUNTER
+          work_num.text ="Step Count: "+ "${event!!.values[0]}"
+        database.child("Step").child(nickname).child(currentdate).child("stepcount").setValue("${event!!.values[0]}")
+        //파이어베이스에 걸음 수 저장
 
 
     }
+
 }
+
 
 

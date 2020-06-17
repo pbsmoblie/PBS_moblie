@@ -11,8 +11,11 @@ class NickActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nick)
 
+
+
         var intent = Intent(this,MainActivity::class.java)
         nic_btn.setOnClickListener {
+            intent.putExtra("nickname",editText.text.toString())
            startActivity(intent)
         }
     }

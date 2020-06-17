@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "274271402122",
+    "firebase_url": "https://stepdb-4abb0.firebaseio.com",
+    "project_id": "stepdb-4abb0",
+    "storage_bucket": "stepdb-4abb0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:274271402122:android:8dc5a0c8ab8364a14d1573",
+        "android_client_info": {
+          "package_name": "com.example.pbs_moblie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "274271402122-68mu6ue3v75ir10u6d48oscl42bef0pd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pbs_moblie",
+            "certificate_hash": "aa6ef5afcce41382328c439375443c5cf93f640e"
+          }
+        },
+        {
+          "client_id": "274271402122-jgmdua0c0pq8c6f1ghs64hq3ts8ajot5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq2zzK4-U6HbqSb0dnSAx4szs5Joy4LB8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "274271402122-jgmdua0c0pq8c6f1ghs64hq3ts8ajot5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
