@@ -31,11 +31,16 @@ class CalendarActivity : AppCompatActivity(){
 
                 override fun onDataChange(p0: DataSnapshot) {
 
-                    var stepcount = p0.child("stepcount").getValue(String::class.java)
-                    //파이어베이스에 저장되었던 걸음 수를 가져옴
+                    if(p0.exists()){ //파이어베이스에 그 날짜에 맞는 값이 존재한다면
+                        var stepcount = p0.child("stepcount").getValue(String::class.java)
+                        //파이어베이스에 저장되었던 걸음 수를 가져옴
 
-                    diarytextview.text = "걸음 수 :"+stepcount
-                    //가져온 걸음 수를 textview에 출력
+                        diarytextview.text = "걸음 수 :"+stepcount
+                        //가져온 걸음 수를 textview에 출력
+                    }else{
+                        diarytextview.text = "오늘은 걷지 않았습니다~^^"
+                    }
+
 
 
                 }

@@ -30,8 +30,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.*
 import java.time.LocalDate
@@ -94,35 +93,37 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    //*   var database : DatabaseReference = FirebaseDatabase.getInstance().reference
-    //*   var nickname : String =" "  //intent로 받은 닉네임을 저장할 변수
-    //*   var currentdate : String =""
+    //*  var database : DatabaseReference = FirebaseDatabase.getInstance().reference
+     //*  var nickname : String =" "  //intent로 받은 닉네임을 저장할 변수
+     //* var currentdate : String =""
+    //*var currentstep: Int =0
+    //*var finalstep : Int =0
     // 이 메소드부터 프로그램 시작
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-      //*  val Date: LocalDate = LocalDate.now() //현재 날짜 표시
+       //* val Date: LocalDate = LocalDate.now() //현재 날짜 표시
       //*  currentdate = Date.format(DateTimeFormatter.ofPattern("yyyy-M-dd")) //Date를 String으로 변환
-      //* val intent1 = getIntent()
+       //*val intent1 = getIntent()
 
 
-     //*   nickname = intent1.getStringExtra("nickname") //intent로 받아온 닉네임을 nickname에 저장
+       //*nickname = intent1.getStringExtra("nickname") //intent로 받아온 닉네임을 nickname에 저장
 
-      //*    val sensorManager : SensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-      //*  val stepcountsensor : Sensor= sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+        //*  val sensorManager : SensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        //*val stepcountsensor : Sensor= sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
 
-      //*  if(stepcountsensor == null){
-      //*      Toast.makeText(this, "No Step Detect Sensor",Toast.LENGTH_SHORT).show()
-      //*   }
+       //*if(stepcountsensor == null){
+          //*  Toast.makeText(this, "No Step Detect Sensor",Toast.LENGTH_SHORT).show()
+      //* }
 
 
 
-        calbtn.setOnClickListener {
-            intent = Intent(this,CalendarActivity::class.java)
-           // intent.putExtra("nickname",nickname) //닉네임을 보냄
-            startActivity(intent)
-        }
+      //*  calbtn.setOnClickListener {
+         //*   intent = Intent(this,CalendarActivity::class.java)
+          //* intent.putExtra("nickname",nickname) //닉네임을 보냄
+           //* startActivity(intent)
+       //* }
 
         //랭킹 버튼만들거
         rankbtn.setOnClickListener {
@@ -159,7 +160,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             ok = { addLocationListener() })
 
         //액티비티가 동작할 때만 센서가 동작하게 하기 위함(터리 소모를 방지하기 위해)
-          //*  sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER),SensorManager.SENSOR_DELAY_FASTEST);
+       //* sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER),SensorManager.SENSOR_DELAY_FASTEST);
         //두번째 인자는 사용할 센서 종류
         //세번째 인자는 값을 얼마나 자주 받을것인지 (화면 방향이 전환될 때 적합한 정도로 값을 받음)
     }
@@ -171,7 +172,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //액티비티가 가려진 경우(사용하지 않을 경우)
         // 걸음 감지 세서를 멈춤(비활성화)
-      //  sensorManager.unregisterListener(this)
+      //*  sensorManager.unregisterListener(this)
         }
 
     // 위치 요청 메소드
@@ -179,7 +180,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun addLocationListener() {
         // 위치 정보 요청
         // (정보 요청할 때 넘겨줄 데이터)에 관한 객체, 위치 갱신되면 호출되는 콜백, 특정 스레드 지정(별 일 없으니 null)
-        //*  fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
+         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 
 
@@ -272,20 +273,49 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }.show()
     }
 
-    //*   override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    //* override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
 
-    //*  }
+      //*}
 
-    //*  override fun onSensorChanged(event: SensorEvent?) { //동작을 감지하면 이벤트를 발생시켜 1씩 증가된
+      //*override fun onSensorChanged(event: SensorEvent?) { //동작을 감지하면 이벤트를 발생시켜 1씩 증가된
                                                         // 최종 값을 전달하는 함수
 
-    //*   if(event?.sensor?.type == Sensor.TYPE_STEP_COUNTER
-    //*     work_num.text ="Step Count: "+ "${event!!.values[0]}"
-    //* database.child("Step").child(nickname).child(currentdate).child("stepcount").setValue("${event!!.values[0]}")
-        //파이어베이스에 걸음 수 저장
+     // if(event?.sensor?.type == Sensor.TYPE_STEP_COUNTER
 
 
-   // }
+
+         //* database.child("Step").child(nickname).child(currentdate).addValueEventListener(object : ValueEventListener{
+            //*  override fun onCancelled(p0: DatabaseError) {
+
+              //*}
+
+             //* override fun onDataChange(p0: DataSnapshot) {
+                //*  if(p0.exists()){
+                   //*   finalstep= event!!.values[0].toInt() - currentstep
+                     //* work_num.text ="Step Count: "+ "$finalstep"
+                     //*database.child("Step").child(nickname).child(currentdate).child("stepcount").setValue("$finalstep")
+                      //파이어베이스에 걸음 수 저장
+
+                  //*}else{ //만약 값이 없다면
+
+                     //* currentstep= event!!.values[0].toInt()
+                      //*finalstep= event!!.values[0].toInt() - currentstep
+                      //*work_num.text ="Step Count: "+ "$finalstep"
+                      //*database.child("Step").child(nickname).child(currentdate).child("stepcount").setValue("$finalstep")
+                      //파이어베이스에 걸음 수 저장
+
+
+                  //*}
+
+             //* }
+
+          //*})
+
+
+
+
+
+   //* }
 }
 
 
