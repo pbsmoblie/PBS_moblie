@@ -47,6 +47,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:19.3.0'
     implementation 'com.android.support:design:29.0.0'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation 'com.android.support:recyclerview-v7:29.1.1'
+
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
 
 }
