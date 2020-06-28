@@ -1,4 +1,5 @@
 package com.example.pbs_moblie
+
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
@@ -43,15 +44,13 @@ import kotlin.concurrent.timerTask
 //,SensorEventListener
 //걸음 감지 센서(TYPE_STEP_COUNTER)를 사용하기 위해 SensorEventListener 인터페이스를  상속
 
-//,SensorEventListener <-센서때문에 잠깐 빼두겠숩니다~
-class MainActivity : AppCompatActivity(), OnMapReadyCallback{
+// <-센서때문에 잠깐 빼두겠숩니다~
+class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListener {
     private val polyLineOptions = PolylineOptions().width(7f).color(Color.RED) // 이동경로를 그릴 선
     private lateinit var mMap: GoogleMap // 마커, 카메라 지정을 위한 구글 맵 객체
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient // 위치 요청 메소드 담고 있는 객체
     private lateinit var locationRequest: LocationRequest // 위치 요청할 때 넘겨주는 데이터에 관한 객체
     private lateinit var locationCallback: MyLocationCallBack // 위치 확인되고 호출되는 객체
-
-
 
 
     // 위치 정보를 얻기 위한 각종 초기화
@@ -94,11 +93,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback{
         }
     }
 
-     var database : DatabaseReference = FirebaseDatabase.getInstance().reference
-       var nickname : String =" "  //intent로 받은 닉네임을 저장할 변수
-      var currentdate : String =""
-    var currentstep: Int =0
-    var finalstep : Int =0
+    var database: DatabaseReference = FirebaseDatabase.getInstance().reference
+    var nickname: String = " "  //intent로 받은 닉네임을 저장할 변수
+    var currentdate: String = ""
+    var currentstep: Int = 0
+    var finalstep: Int = 0
+    var lastTime:Long = 0
+    var sumTime:Long = 0
+
     // 이 메소드부터 프로그램 시작
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,37 +108,31 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback{
 
         val Date: LocalDate = LocalDate.now() //현재 날짜 표시
         currentdate = Date.format(DateTimeFormatter.ofPattern("yyyy-M-dd")) //Date를 String으로 변환
-       val intent1 = getIntent()
+        val intent1 = getIntent()
 
 
-       nickname = intent1.getStringExtra("nickname") //intent로 받아온 닉네임을 nickname에 저장
+        nickname = intent1.getStringExtra("nickname") //intent로 받아온 닉네임을 nickname에 저장
 
-       //*  val sensorManager : SensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-       //*val stepcountsensor : Sensor= sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+        val sensorManager: SensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val stepcountsensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
 
-       //*if(stepcountsensor == null){
-          //*  Toast.makeText(this, "No Step Detect Sensor",Toast.LENGTH_SHORT).show()
-       //*}
-
-
-
-           calbtn.setOnClickListener {
-           intent = Intent(this,CalendarActivity::class.java)
-           intent.putExtra("nickname",nickname) //닉네임을 보냄
-            startActivity(intent) }
-
-        //랭킹 버튼만들거
-        rankbtn.setOnClickListener {
-            intent = Intent(this,RankActivity::class.java)
-            startActivity(intent)
+        if (stepcountsensor == null) {
+            Toast.makeText(this, "No Step Detect Sensor", Toast.LENGTH_SHORT).show()
         }
 
 
 
+        calbtn.setOnClickListener {
+            intent = Intent(this, CalendarActivity::class.java)
+            intent.putExtra("nickname", nickname) //닉네임을 보냄
+            startActivity(intent)
+        }
 
-
-
-
+        //랭킹 버튼만들거
+        rankbtn.setOnClickListener {
+            intent = Intent(this, RankActivity::class.java)
+            startActivity(intent)
+        }
 
 
         // 화면이 꺼지지 않게 하기
@@ -160,7 +156,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback{
             ok = { addLocationListener() })
 
         //액티비티가 동작할 때만 센서가 동작하게 하기 위함(터리 소모를 방지하기 위해)
-        //*sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER),SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER),SensorManager.SENSOR_DELAY_FASTEST);
         //두번째 인자는 사용할 센서 종류
         //세번째 인자는 값을 얼마나 자주 받을것인지 (화면 방향이 전환될 때 적합한 정도로 값을 받음)
     }
@@ -168,19 +164,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback{
     // 프로그램이 중단되면 위치 요청을 삭제한다
     override fun onPause() {
         super.onPause()
-         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
 
         //액티비티가 가려진 경우(사용하지 않을 경우)
         // 걸음 감지 세서를 멈춤(비활성화)
-        //*sensorManager.unregisterListener(this)
-        }
+        sensorManager.unregisterListener(this)
+    }
 
     // 위치 요청 메소드
     @SuppressLint("MissingPermission")
     private fun addLocationListener() {
         // 위치 정보 요청
         // (정보 요청할 때 넘겨줄 데이터)에 관한 객체, 위치 갱신되면 호출되는 콜백, 특정 스레드 지정(별 일 없으니 null)
-         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 
 
@@ -273,24 +269,35 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback{
         }.show()
     }
 
-     //*override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
 
-      //*}
+    }
 
-      //*override fun onSensorChanged(event: SensorEvent?) { //동작을 감지하면 이벤트를 발생시켜 1씩 증가된
-                                                        // 최종 값을 전달하는 함수
+    override fun onSensorChanged(event: SensorEvent?) { //동작을 감지하면 이벤트를 발생시켜 1씩 증가된
+        // 최종 값을 전달하는 함수
+
+        var currentTime = System.nanoTime()
+        work_num.text = "Step Count: " + "${event!!.values[0].toInt()}"
+        var lastTime = System.nanoTime()
 
 
+        var gabTime = lastTime-currentTime
+
+        database.child("Step").child(nickname).child(currentdate).child("stepcount")
+            .setValue("${event!!.values[0].toInt()}")
+        database.child("Step").child("ranking").child(nickname).child("nickname").setValue(nickname)
+        database.child("Step").child("ranking").child(nickname).child("stepcount")
+            .setValue("${event!!.values[0].toInt()}")
 
 
-         //* work_num.text ="Step Count: "+ "${event!!.values[0].toInt()}"
+        sumTime += gabTime
 
-          //*database.child("Step").child(nickname).child(currentdate).child("stepcount").setValue("${event!!.values[0].toInt()}")
+        work_sec.text = "${sumTime/1000000}초"
 
-    //*database.child("Step").child("ranking").child(nickname).child("nickname").setValue(nickname)
-    //*database.child("Step").child("ranking").child(nickname).child("stepcount").setValue("${event!!.values[0].toInt()}")
+        work_min.text = "${sumTime/60000000}분"
 
-     //* }
+
+    }
 }
 
 

@@ -8,8 +8,8 @@
 
     <EditText
         android:id="@+id/editText"
-        android:layout_width="373dp"
-        android:layout_height="50dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="338dp"
         android:ems="10"
         android:hint="닉네임을 입력하세요"
