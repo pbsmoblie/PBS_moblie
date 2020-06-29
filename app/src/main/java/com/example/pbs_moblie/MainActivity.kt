@@ -11,7 +11,10 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.location.Location
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -28,18 +31,21 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
+
 import org.jetbrains.anko.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.concurrent.timer
+import kotlin.concurrent.timerTask
 
 //,SensorEventListener
 //걸음 감지 센서(TYPE_STEP_COUNTER)를 사용하기 위해 SensorEventListener 인터페이스를  상속
 
 //, SensorEventListener <-센서때문에 잠깐 빼두겠숩니다~
-class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListener {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback , SensorEventListener {
     private val polyLineOptions = PolylineOptions().width(7f).color(Color.RED) // 이동경로를 그릴 선
     private lateinit var mMap: GoogleMap // 마커, 카메라 지정을 위한 구글 맵 객체
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient // 위치 요청 메소드 담고 있는 객체
@@ -107,8 +113,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
 
         nickname = intent1.getStringExtra("nickname") //intent로 받아온 닉네임을 nickname에 저장
 
-       val sensorManager: SensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-       val stepcountsensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+        val sensorManager: SensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val stepcountsensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
 
         if (stepcountsensor == null) {
             Toast.makeText(this, "No Step Detect Sensor", Toast.LENGTH_SHORT).show()
@@ -162,7 +168,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
 
         //액티비티가 가려진 경우(사용하지 않을 경우)
         // 걸음 감지 세서를 멈춤(비활성화)
-       sensorManager.unregisterListener(this)
+        sensorManager.unregisterListener(this)
     }
 
     // 위치 요청 메소드
@@ -263,7 +269,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
         }.show()
     }
 
-  override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+   override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
 
     }
 
@@ -271,27 +277,27 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
         // 최종 값을 전달하는 함수
 
         var currentTime = System.nanoTime()
-        work_num.text = "Step Count: " + "${event!!.values[0].toInt()}"
+        work_num.text = "Step Count: " + "${event!!.values[0].toInt()}" //걸음 수를 worknum_text에 출력
         var lastTime = System.nanoTime()
 
 
         var gabTime = lastTime-currentTime
 
         database.child("Step").child(nickname).child(currentdate).child("stepcount")
+            .setValue("${event!!.values[0].toInt()}") //파이어베이스에 걸음 수 저장
+        database.child("Step").child("ranking").child(nickname).child("nickname").setValue(nickname) //파이어베이스에 닉네임 저장
+        database.child("Step").child("ranking").child(nickname).child("stepcount") //파이어베이스 랭킹에 걸음 수 저장
             .setValue("${event!!.values[0].toInt()}")
-        database.child("Step").child("ranking").child(nickname).child("nickname").setValue(nickname)
-        database.child("Step").child("ranking").child(nickname).child("stepcount")
-            .setValue("${event!!.values[0].toInt()}")
 
-        sumTime += gabTime
 
-       work_sec.text = "${sumTime/1000000}초"
 
-        work_min.text = "${sumTime/60000000}분"
-        database.child("Step").child(nickname).child(currentdate).child("timecount").setValue("${sumTime/1000000}초")
-        database.child("Step").child("timeranking").child(nickname).child("time").setValue("${sumTime/60000000}분")
+       work_sec.text = "${sumTime/1000000}초" //초 work_sec에 출력
 
-        database.child("Step").child("timeranking").child(nickname).child("nickname").setValue(nickname)
+        work_min.text = "${sumTime/60000000}분" //분 work_min에 출력
+
+        database.child("Step").child("timeranking").child(nickname).child("time").setValue("${sumTime/60000000}분") //파이어베이스에 걸은 시간 저장
+
+        database.child("Step").child("timeranking").child(nickname).child("nickname").setValue(nickname) //파이어베이스에 닉네임 저장
 
 
     }

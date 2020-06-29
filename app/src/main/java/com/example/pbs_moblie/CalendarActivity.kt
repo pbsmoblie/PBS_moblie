@@ -24,7 +24,7 @@ class CalendarActivity : AppCompatActivity(){
         calendarView.setOnDateChangeListener{view, year,month,dayOfMonth -> //달력의 날짜를 터치할 때마다
 
             val date :String = String.format("%d-%d-%d",year,month+1,dayOfMonth) //오늘 날짜를 년-월-일 형식으로
-            database.child("Step").child(nickname).child(date).addValueEventListener( object  : ValueEventListener {
+            database.child("Step").child(nickname).child(date).addValueEventListener( object  : ValueEventListener { //파이어베이스에서 걸음 수 가져오기
                 override fun onCancelled(p0: DatabaseError) {
 
                 }
@@ -40,7 +40,7 @@ class CalendarActivity : AppCompatActivity(){
                         diarytextview.text = "걸음 수 :"+stepcount
                         worktextview.text = "걸은 시간:"+worktime
                         //가져온 걸음 수를 textview에 출력
-                    }else{
+                    }else{ //파이어베이스에 값이 없다면
                         datetextveiw.text =date
                         diarytextview.text = "아직 걷지 않았습니다~^^"
                     }
