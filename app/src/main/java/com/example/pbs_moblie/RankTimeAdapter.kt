@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.ThrowOnExtraProperties
 import org.w3c.dom.Text
 
-class RankNumAdapter(val context: Context?, val RankNumList:MutableList<RankNumData>) : RecyclerView.Adapter<RankNumAdapter.CustomViewHolder>(){
+class RankTimeAdapter(val context: Context?, val RankTimeList:MutableList<RankTimeData>) : RecyclerView.Adapter<RankTimeAdapter.CustomViewHolder>(){
     class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nickname = itemView.findViewById<TextView>(R.id.Nickname)
-        val stepcount= itemView.findViewById<TextView>(R.id.Stepcount)
+        val timecount = itemView.findViewById<TextView>(R.id.Timecount)
 
     }
 
@@ -22,18 +22,18 @@ class RankNumAdapter(val context: Context?, val RankNumList:MutableList<RankNumD
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): RankNumAdapter.CustomViewHolder {
-      val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item,parent,false)
+    ): RankTimeAdapter.CustomViewHolder {
+      val view = LayoutInflater.from(parent.context).inflate(R.layout.time_item,parent,false)
         return CustomViewHolder(view)
     }
 
     override fun getItemCount(): Int {
-        return RankNumList.size
+        return RankTimeList.size
     }
 
-    override fun onBindViewHolder(holder: RankNumAdapter.CustomViewHolder, position: Int) {
-        holder.nickname.text = RankNumList.get(position).nickname
-        holder.stepcount.text=RankNumList.get(position).stepcount
+    override fun onBindViewHolder(holder: RankTimeAdapter.CustomViewHolder, position: Int) {
+        holder.nickname.text = RankTimeList.get(position).nickname
+        holder.timecount.text=RankTimeList.get(position).time
 
     }
 

@@ -44,8 +44,8 @@ import kotlin.concurrent.timerTask
 //,SensorEventListener
 //걸음 감지 센서(TYPE_STEP_COUNTER)를 사용하기 위해 SensorEventListener 인터페이스를  상속
 
-// <-센서때문에 잠깐 빼두겠숩니다~
-class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListener {
+//, SensorEventListener <-센서때문에 잠깐 빼두겠숩니다~
+class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private val polyLineOptions = PolylineOptions().width(7f).color(Color.RED) // 이동경로를 그릴 선
     private lateinit var mMap: GoogleMap // 마커, 카메라 지정을 위한 구글 맵 객체
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient // 위치 요청 메소드 담고 있는 객체
@@ -113,13 +113,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
 
         nickname = intent1.getStringExtra("nickname") //intent로 받아온 닉네임을 nickname에 저장
 
-        val sensorManager: SensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        val stepcountsensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+       // val sensorManager: SensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+       // val stepcountsensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
 
-        if (stepcountsensor == null) {
+      /*  if (stepcountsensor == null) {
             Toast.makeText(this, "No Step Detect Sensor", Toast.LENGTH_SHORT).show()
         }
-
+*/
 
 
         calbtn.setOnClickListener {
@@ -156,7 +156,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
             ok = { addLocationListener() })
 
         //액티비티가 동작할 때만 센서가 동작하게 하기 위함(터리 소모를 방지하기 위해)
-        sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER),SensorManager.SENSOR_DELAY_FASTEST);
+        //sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER),SensorManager.SENSOR_DELAY_FASTEST);
         //두번째 인자는 사용할 센서 종류
         //세번째 인자는 값을 얼마나 자주 받을것인지 (화면 방향이 전환될 때 적합한 정도로 값을 받음)
     }
@@ -168,7 +168,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
 
         //액티비티가 가려진 경우(사용하지 않을 경우)
         // 걸음 감지 세서를 멈춤(비활성화)
-        sensorManager.unregisterListener(this)
+      //  sensorManager.unregisterListener(this)
     }
 
     // 위치 요청 메소드
@@ -269,7 +269,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
         }.show()
     }
 
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+  /*  override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
 
     }
 
@@ -290,14 +290,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
             .setValue("${event!!.values[0].toInt()}")
 
 
-        sumTime += gabTime
 
-        work_sec.text = "${sumTime/1000000}초"
+       work_sec.text = "${sumTime/1000000}초"
 
         work_min.text = "${sumTime/60000000}분"
 
+        database.child("Step").child("timeranking").child(nickname).child("time").setValue("${sumTime/60000000}분")
 
-    }
+        database.child("Step").child("timeranking").child(nickname).child("nickname").setValue(nickname)
+
+
+    }*/
 }
 
 
