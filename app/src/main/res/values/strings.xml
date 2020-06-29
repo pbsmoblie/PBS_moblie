@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PBS_moblie</string>
+    <string name="app_name">뚜버기</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_rank">RankActivity</string>
     <string name="tab_text_1">Tab 1</string>
