@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.ThrowOnExtraProperties
 import org.w3c.dom.Text
 
+//리사이클러뷰와 데이터를 연결하기 위한 어뎁터
 class RankTimeAdapter(val context: Context?, val RankTimeList:MutableList<RankTimeData>) : RecyclerView.Adapter<RankTimeAdapter.CustomViewHolder>(){
     class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nickname = itemView.findViewById<TextView>(R.id.Nickname)
@@ -23,7 +24,7 @@ class RankTimeAdapter(val context: Context?, val RankTimeList:MutableList<RankTi
         parent: ViewGroup,
         viewType: Int
     ): RankTimeAdapter.CustomViewHolder {
-      val view = LayoutInflater.from(parent.context).inflate(R.layout.time_item,parent,false)
+      val view = LayoutInflater.from(parent.context).inflate(R.layout.time_item,parent,false) //time_item 형태로 데이터가 저장
         return CustomViewHolder(view)
     }
 

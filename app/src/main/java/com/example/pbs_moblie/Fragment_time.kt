@@ -30,10 +30,11 @@ class Fragment_time : Fragment() {
 
 
 
-        val rankTimeList : MutableList<RankTimeData> = mutableListOf() //RankNumData형식의 list생성
+        val rankTimeList : MutableList<RankTimeData> = mutableListOf() //RankTimeData형식의 list생성
 
         var adapter : RankTimeAdapter? = null
-        //orderBychild를 이용해서 stepcount 수가 큰 수대로 정렬해서 가져옴
+        //orderBychild를 이용해서 time이 큰 수대로 정렬해서 가져옴
+        //지정된 하위 키 또는 중첩된 하위 경로의 값에 따라 결과를 정렬
         database.child("timeranking").orderByChild("time").addValueEventListener(object :
             ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
@@ -44,7 +45,7 @@ class Fragment_time : Fragment() {
                 if(p0.exists()){ //firebase에 값이 있다면
                     for(snapshot in p0.children){
 
-                        val ranktimedata  = snapshot.getValue(RankTimeData::class.java) //파이어베이스에서 nickname과 stepcount 가져오기
+                        val ranktimedata  = snapshot.getValue(RankTimeData::class.java) //파이어베이스에서 nickname과 time 가져오기
                         if (ranktimedata != null) {
                             rankTimeList.add(0,ranktimedata) //list에 값 저장
                         }

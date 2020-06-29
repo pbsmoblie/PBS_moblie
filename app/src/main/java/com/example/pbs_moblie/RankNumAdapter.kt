@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.ThrowOnExtraProperties
 import org.w3c.dom.Text
 
+//리사이클러뷰와 데이터를 연결하기 위한 어뎁터
 class RankNumAdapter(val context: Context?, val RankNumList:MutableList<RankNumData>) : RecyclerView.Adapter<RankNumAdapter.CustomViewHolder>(){
     class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nickname = itemView.findViewById<TextView>(R.id.Nickname)
