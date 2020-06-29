@@ -33,9 +33,12 @@ class CalendarActivity : AppCompatActivity(){
 
                     if(p0.exists()){ //파이어베이스에 그 날짜에 맞는 값이 존재한다면
                         var stepcount = p0.child("stepcount").getValue(String::class.java)
+                        var worktime = p0.child("timecount").getValue(String::class.java)
+
                         //파이어베이스에 저장되었던 걸음 수를 가져옴
                         datetextveiw.text = date
                         diarytextview.text = "걸음 수 :"+stepcount
+                        worktextview.text = "걸은 시간:"+worktime
                         //가져온 걸음 수를 textview에 출력
                     }else{
                         datetextveiw.text =date
