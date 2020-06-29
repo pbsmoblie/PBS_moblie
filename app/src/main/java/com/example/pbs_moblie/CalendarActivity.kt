@@ -35,14 +35,18 @@ class CalendarActivity : AppCompatActivity(){
                         var stepcount = p0.child("stepcount").getValue(String::class.java)
                         var worktime = p0.child("timecount").getValue(String::class.java)
 
-                        //파이어베이스에 저장되었던 걸음 수를 가져옴
+                        //파이어베이스에 저장되었던 걸음 수와 시간을 가져옴
                         datetextveiw.text = date
                         diarytextview.text = "걸음 수 :"+stepcount
-                        worktextview.text = "걸은 시간:"+worktime
-                        //가져온 걸음 수를 textview에 출력
+
+                            worktextview.text = "걸은 시간:"+worktime
+
+
+                        //가져온 걸음 수와 시간을 textview에 출력
                     }else{ //파이어베이스에 값이 없다면
                         datetextveiw.text =date
                         diarytextview.text = "아직 걷지 않았습니다~^^"
+                        worktextview.text = ""
                     }
 
 

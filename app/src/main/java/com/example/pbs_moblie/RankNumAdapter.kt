@@ -35,7 +35,6 @@ class RankNumAdapter(val context: Context?, val RankNumList:MutableList<RankNumD
     override fun onBindViewHolder(holder: RankNumAdapter.CustomViewHolder, position: Int) {
         holder.nickname.text = RankNumList.get(position).nickname
         holder.stepcount.text=RankNumList.get(position).stepcount
-
     }
 
 
