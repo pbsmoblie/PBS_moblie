@@ -45,7 +45,7 @@ import kotlin.concurrent.timerTask
 //걸음 감지 센서(TYPE_STEP_COUNTER)를 사용하기 위해 SensorEventListener 인터페이스를  상속
 
 //, SensorEventListener <-센서때문에 잠깐 빼두겠숩니다~
-class MainActivity : AppCompatActivity(), OnMapReadyCallback , SensorEventListener {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListener {
     private val polyLineOptions = PolylineOptions().width(7f).color(Color.RED) // 이동경로를 그릴 선
     private lateinit var mMap: GoogleMap // 마커, 카메라 지정을 위한 구글 맵 객체
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient // 위치 요청 메소드 담고 있는 객체
@@ -98,8 +98,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback , SensorEventListen
     var currentdate: String = ""
     var currentstep: Int = 0
     var finalstep: Int = 0
-    var lastTime:Long = 0
-    var sumTime:Long = 0
+    var lastTime: Long = 0
+    var sumTime: Long = 0
 
     // 이 메소드부터 프로그램 시작
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -156,7 +156,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback , SensorEventListen
             ok = { addLocationListener() })
 
         //액티비티가 동작할 때만 센서가 동작하게 하기 위함(터리 소모를 방지하기 위해)
-        sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER),SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(
+            this,
+            sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER),
+            SensorManager.SENSOR_DELAY_FASTEST
+        );
         //두번째 인자는 사용할 센서 종류
         //세번째 인자는 값을 얼마나 자주 받을것인지 (화면 방향이 전환될 때 적합한 정도로 값을 받음)
     }
@@ -269,7 +273,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback , SensorEventListen
         }.show()
     }
 
-   override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
 
     }
 
@@ -281,23 +285,31 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback , SensorEventListen
         var lastTime = System.nanoTime()
 
 
-        var gabTime = lastTime-currentTime
+        var gabTime = lastTime - currentTime
 
         database.child("Step").child(nickname).child(currentdate).child("stepcount")
             .setValue("${event!!.values[0].toInt()}") //파이어베이스에 걸음 수 저장
-        database.child("Step").child("ranking").child(nickname).child("nickname").setValue(nickname) //파이어베이스에 닉네임 저장
-        database.child("Step").child("ranking").child(nickname).child("stepcount") //파이어베이스 랭킹에 걸음 수 저장
+        database.child("Step").child("ranking").child(nickname).child("nickname")
+            .setValue(nickname) //파이어베이스에 닉네임 저장
+        database.child("Step").child("ranking").child(nickname)
+            .child("stepcount") //파이어베이스 랭킹에 걸음 수 저장
             .setValue("${event!!.values[0].toInt()}")
 
 
 
-       work_sec.text = "${sumTime/1000000}초" //초 work_sec에 출력
+        work_sec.text = "${sumTime / 1000000}초" //초 work_sec에 출력
 
-        work_min.text = "${sumTime/60000000}분" //분 work_min에 출력
+        work_min.text = "${sumTime / 60000000}분" //분 work_min에 출력
 
-        database.child("Step").child("timeranking").child(nickname).child("time").setValue("${sumTime/60000000}분") //파이어베이스에 걸은 시간 저장
 
-        database.child("Step").child("timeranking").child(nickname).child("nickname").setValue(nickname) //파이어베이스에 닉네임 저장
+        database.child("Step").child(nickname).child(currentdate).child("timecount")
+            .setValue("${event!!.values[0].toInt()}") //파이어베이스에 걸은 시간 저장
+
+        database.child("Step").child("timeranking").child(nickname).child("time")
+            .setValue("${sumTime / 60000000}분") //파이어베이스에 걸은 시간 저장
+
+        database.child("Step").child("timeranking").child(nickname).child("nickname")
+            .setValue(nickname) //파이어베이스에 닉네임 저장
 
 
     }
