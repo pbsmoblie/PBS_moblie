@@ -8,5 +8,4 @@
     android:background="@drawable/splash"
     tools:context=".SplashActivity">
 
-
 </LinearLayout>
